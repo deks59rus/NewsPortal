@@ -1,0 +1,77 @@
+cd ..
+venv/scripts/activate
+cd NewsPaper
+python manage.py shell
+from news.models import *
+
+user1 = User.objects.create_user(username = 'Dexter')
+user2 = User.objects.create_user(username = 'Admin')
+user3 = User.objects.create_user(username = 'NewsBot')
+user4 = User.objects.create_user(username = 'Neo')
+Author.objects.create(authorUser=user1)
+Author.objects.create(authorUser=user2)
+NewsBot=Author.objects.create(authorUser=user3)
+Neo=Author.objects.create(authorUser=user4)
+Category.objects.create(category_name = "Путешествия")
+c_sport=Category.objects.create(category_name = "Спорт")
+c_politics=Category.objects.create(category_name = "Политика")
+с_movies = Category.objects.create(category_name = "Кино")
+с_IT = Category.objects.create(category_name = "Технологии")
+
+Post.objects.create(author_post = NewsBot, post_type = Post.NEWS, post_name = "Александр Овечкин провел 1392-й матч в НХЛ", post_content = "Российский нападающий «Вашингтон Кэпиталз» Александр Овечкин отметился заброшенной шайбой в матче регулярного чемпионата НХЛ против
+«Монреаля».")
+
+Post.objects.create(author_post = Neo, post_type = Post.ARTICLE, post_name = "Microsoft запускает предварительную поддержку Universal Print для macOS", post_content = "Функция Universal Print стала доступна в режиме предварительного просмотра для macOS. С её помощью предп
+риятия могут запускать принтеры без необходимости устанавливать драйверы на локальные компьютеры. Всё управление происходит в облаке Azure.")
+
+Post.objects.create(author_post = Neo, post_type = Post.ARTICLE, post_name = "Rust Foundation получила от Google грант на улучшение взаимодействия между языками C++ и Rust", post_content = "Google выдала организации Rust Foundation грант в $1 млн на улучшение взаимодейств
+ия между языками программирования C++ и Rust. Предполагается, что в будущем это поможет расширить использование Rust в Android.Функция Universal Print стала доступна в режиме предварительного просмотра для macOS. С её помощью предприятия могут запускать принтеры без необходим
+ости устанавливать драйверы на локальные компьютеры. Всё управление происходит в облаке Azure.")
+
+Post.objects.create(author_post = Neo, post_type = Post.ARTICLE, post_name = "Rust Foundation получила от Google грант на улучшение взаимодействия между языками C++ и Rust", post_content = "Google выдала организации Rust Foundation грант в $1 млн на улучшение взаимодейств
+ия между языками программирования C++ и Rust. Предполагается, что в будущем это поможет расширить использование Rust в Android. Как отмечает Rust Foundation, для организаций с миллионами строк на C++ во флагманских продуктах переписывание этого кода на Rust в сравнительно кор
+откие сроки трудноосуществимо из-за множества бизнес- или технических факторов. При поддержке Google Rust Foundation создала инициативу Interop Initiative, которая призвана сделать процесс перехода на Rust более плавным. Грант от Google направлен на ускорение внедрения Rust к
+ак в самой компании, так и во всей индустрии. На эти средства Rust Foundation планирует нанять одного или нескольких инженеров для Interop Initiative и расширить работу по использованию искусственного интеллекта для перехода с C++ на Rust. Организация Rust Foundation, созданн
+ая в 2021 году совместными усилиями AWS, Huawei, Google, Microsoft и Mozilla, занимается управлением экосистемой Rust и поддержкой разработчиков языка. Она также ответственна за финансирование проекта. Ожидается, что благодаря партнёрству Google и Rust Foundation язык Rust ст
+анет привлекательнее разработчиков и будет активно применяться в различных проектах и компаниях, отмечают в организации.")
+
+Post.objects.get(id = 4).post_category.add(Category.objects.get(category_name = "Технологии"))
+Post.objects.get(id = 1).post_category.add(Category.objects.get(category_name = "Спорт"))
+Post.objects.get(id = 1).post_category.add(Category.objects.get(category_name = "Политика"))
+Post.objects.get(id = 2).post_category.add(Category.objects.get(category_name = "Технологии"))
+
+Comment.objects.create(post = Post.objects.get(id=1), user= Author.objects.get(id=3).authorUser, comment_text = "Крутооо!")
+Comment.objects.create(post = Post.objects.get(id=2), user= Author.objects.get(id=1).authorUser, comment_text = "Очень Интересно!")
+Comment.objects.create(post = Post.objects.get(id=3), user= Author.objects.get(id=1).authorUser, comment_text = "Баяяяяян! Афффтор выпей йааду XD")
+Comment.objects.create(post = Post.objects.get(id=4), user= Author.objects.get(id=4).authorUser, comment_text = "Хммммммм....")
+Comment.objects.create(post = Post.objects.get(id=1), user= Author.objects.get(id=1).authorUser, comment_text = "Скучно")
+
+Post.objects.get(id = 1).like()
+Post.objects.get(id = 1).like()
+Post.objects.get(id = 1).like()
+Post.objects.get(id = 1).like()
+Post.objects.get(id = 1).like()
+Post.objects.get(id = 3).dislike()
+Post.objects.get(id = 3).dislike()
+Post.objects.get(id = 3).dislike()
+Comment.objects.get(id = 3).dislike()
+Comment.objects.get(id = 3).dislike()
+Comment.objects.get(id = 1).like()
+Comment.objects.get(id = 1).like()
+
+Author.objects.get(id=1).update_rating()
+Author.objects.get(id=2).update_rating()
+Author.objects.get(id=3).update_rating()
+Author.objects.get(id=4).update_rating()
+
+rating = Author.objects.all().order_by("-_author_rating").values("authorUser__username", "_author_rating")
+rating[0]
+
+best_post = Post.objects.all().order_by("-post_rating").values("author_post__authorUser__username", "post_rating", "post_name")
+result = "".join(str(value)+ " _ " for key, value in best_post[0].items())
+preview = Post.objects.get(post_name = best_post[0]["post_name"]).preview()
+date = Post.objects.get(post_name = best_post[0]["post_name"]).date_out()
+print (date + result + preview)
+comments = Comment.objects.filter(post_id = best_post_id).values("comment_date", "user__username", "comment_rating", "comment_text")
+print(comments)
+exit()
