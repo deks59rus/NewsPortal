@@ -1,0 +1,43 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+<!-- Название у нас будет products -->
+{% block title %}
+Products
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+   <h1>Все товары</h1>
+    <!--<h3>{{ time_now|date:'M d Y' }}</h3>-->
+    <h3>{% current_time '%b %d %Y' %}</h3>
+   <hr>
+   {% if products %}
+       <table>
+           <tr>
+               <td>Название</td>
+               <td>Описание</td>
+               <td>Категория</td>
+               <td>Цена</td>
+               <td>Количество</td>
+           </tr>
+
+           {% for product in products %}
+           <tr>
+               <td>{{ product.name }}</td>
+                <!-- Добавим специальный фильтр truncatechars,
+                чтобы ограничить количество символов до 15.
+                Все остальные символы превратятся в многоточие. -->
+               <td>{{ product.description|truncatewords:3 }}</td>
+               <td>{{ product.category.name }}</td>
+               <td>{{ product.price|currency }}</td>
+               <td>{{ product.quantity }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Товаров нет!</h2>
+   {% endif %}
+{% endblock content %}

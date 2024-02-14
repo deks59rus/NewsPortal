@@ -37,10 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "news",
-    "accounts",
+    "simpleapp",
+    "django.contrib.sites",
     'django.contrib.flatpages',
-    'django.contrib.sites'
 ]
 
 SITE_ID = 1
@@ -55,7 +54,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "NewsPaper.urls"
+ROOT_URLCONF = "test_project.urls"
 
 TEMPLATES = [
     {
@@ -73,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "NewsPaper.wsgi.application"
+WSGI_APPLICATION = "test_project.wsgi.application"
 
 
 # Database

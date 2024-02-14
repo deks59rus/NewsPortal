@@ -1,0 +1,5 @@
+from simpleapp.models import *
+Category.objects.create(name= "Овощи")
+Category.objects.create(name= "Фрукты")
+Product.objects.create(name = "Картофель", description = "Вкусный корнеплод!", quantity =2000, price = 55.4, category= Category.objects.get(name="Овощи") )
+Product.objects.create(name = "Апельсин", description = "Оранжевое солнышко и кладезь витаминов!", quantity =1111, price =80.95, category= Category.objects.get(name="Фрукты") )
