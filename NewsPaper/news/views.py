@@ -6,6 +6,7 @@ from .filters import NewsFilter
 from .forms import NewForm, ArticleForm, CommentForm
 from django.urls import reverse_lazy
 from django.urls import reverse
+from django.shortcuts import redirect
 # Create your views here.
 class NewsList(ListView):
 
@@ -92,7 +93,15 @@ class CommentaryCreate(CreateView):
     def form_valid(self, form):
         import re
         comm = form.save(commit=False)
+
        # data =self.get_context_data()
-        #post_id=re.findall(r'\d+', link)[-1]
-        comm.post = Post.objects.get(id = 1)
+        link = self.get_current_page_url()
+        post_id=re.findall(r'\d+', link)[-1]
+        comm.post = Post.objects.get(id = post_id)
         return super().form_valid(form)
+
+    def get_current_page_url(self):
+        """
+        Returns the current page URL.
+        """
+        return self.request.build_absolute_uri()

@@ -9,19 +9,19 @@ Post
 
 <!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
-       <table>
+       <table align="center">
            <td>
                <form action=".." >
                    <input type="submit" value="Назад" />
                </form>
            </td>
            <td>
-               <form action="update/" >
+               <form action="./update" >
                    <input type="submit" value="Редактировать" />
                </form>
            </td>
            <td>
-               <form action="delete/" >
+               <form action="./delete" >
                    <input type="submit" value="Удалить" />
                </form>
            </td>
@@ -30,17 +30,33 @@ Post
        </table>
 
 <h1>{{ new.post_name.title|censor}} </h1>
-<h2>Дата публикации: {{new.time_of_creation|date:'d M Y'}}</h2>
-<h3> {{new.post_content|censor}}</h3>
-<p>Автор: {{new.author_post.authorUser}}</p>
-<p>Рейтинг: {{new.post_rating}}</p>
-<!--<p>Добавить комментарий:</p>-->
-   <form action="./addcomment" method="get">
+<p></p>
+<h4 align="left">Дата публикации: {{new.time_of_creation|date:'d M Y'}}</h4>
+    <div style="text-align: left;">
+        <span  style="white-space: pre-line; text-align: left;"> {{new.post_content|censor}}</span>
+        <p></p>
+        <!--border:1px solid red;-->
+        <h6>Автор: {{new.author_post.authorUser}}</h6>
+        <h6>Рейтинг: {{new.post_rating}}</h6>
+    </div>
+<!--Лайк и Дизлайк:-->
+    <table align="center">
+           <td>
+            <button type="button" onclick="new.like()">Like</button>
+           </td>
+            <td>
+            <button type="button" onclick="new.dislike()">Dislike</button>
+           </td>
+    </table>
+<!--Добавить комментарий:-->
+    <form action="./addcomment" method="get">
        {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
        {{ filterset.form.as_p }}
        {# Добавим кнопку отправки данных формы #}
        <input type="submit" value="Добавить комментарий" />
    </form>
-<p>Комментарии: {{new.show_comments}}</p>
-
+    <div style="text-align: left;">
+<h3>Комментарии:</h3>
+<span style="white-space: pre-line">{{new.show_comments}}</span>
+    </div>
 {% endblock content %}

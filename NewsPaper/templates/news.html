@@ -12,10 +12,10 @@
 <h1>Новости</h1>
 <!--{{ news }}-->
 <h2>Новостей на странице: {{news|length}}</h2>
-<form action="create/" >
+<form action="{%url 'new_create' %}" >
     <input type="submit" value="Опубликовать новость" />
 </form>
-<form action="search/" >
+<form action="{%url 'news_search'%}" >
     <input type="submit" value="Поиск" />
 </form>
        <table>

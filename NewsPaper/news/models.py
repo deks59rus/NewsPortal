@@ -60,8 +60,8 @@ class Post(models.Model):
         for comm in comments:
             author = comm.user.username
             text = comm.comment_text
-            results.append(f"{author} говорит: '{text}'")
-        return results
+            results.append(f"{author}: \"{text}\"")
+        return '\n'.join(results)
     def like(self):
         self.post_rating += 1
         self.save()
@@ -90,11 +90,13 @@ class Comment(models.Model):
     def like(self):
         self.comment_rating += 1
         self.save()
+        return ""
 
     def dislike(self):
         self.comment_rating -= 1
         self.save()
+        return ""
     def __str__(self):
         return f'Комментарий к посту {self.post.post_name.title()} от пользователя {self.user} - {self.comment_date}'
     def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.id)])
+        return reverse('post_detail', args=[str(self.post.id)])
