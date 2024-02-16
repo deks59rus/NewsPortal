@@ -1,6 +1,7 @@
 <!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
+{% load custom_tags %}
 <!-- Название у нас будет Product -->
 {% block title %}
 Post
@@ -8,10 +9,38 @@ Post
 
 <!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
+       <table>
+           <td>
+               <form action=".." >
+                   <input type="submit" value="Назад" />
+               </form>
+           </td>
+           <td>
+               <form action="update/" >
+                   <input type="submit" value="Редактировать" />
+               </form>
+           </td>
+           <td>
+               <form action="delete/" >
+                   <input type="submit" value="Удалить" />
+               </form>
+           </td>
+
+
+       </table>
+
 <h1>{{ new.post_name.title|censor}} </h1>
 <h2>Дата публикации: {{new.time_of_creation|date:'d M Y'}}</h2>
 <h3> {{new.post_content|censor}}</h3>
 <p>Автор: {{new.author_post.authorUser}}</p>
 <p>Рейтинг: {{new.post_rating}}</p>
+<!--<p>Добавить комментарий:</p>-->
+   <form action="./addcomment" method="get">
+       {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
+       {{ filterset.form.as_p }}
+       {# Добавим кнопку отправки данных формы #}
+       <input type="submit" value="Добавить комментарий" />
+   </form>
+<p>Комментарии: {{new.show_comments}}</p>
 
 {% endblock content %}
