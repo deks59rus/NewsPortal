@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 
 # Товар для нашей витрины
@@ -23,7 +24,8 @@ class Product(models.Model):
     price = models.FloatField(
         validators=[MinValueValidator(0.0)],
     )
-
+    def get_absolute_url(self):
+        return reverse('product_detail', args=[str(self.id)])
     def __str__(self):
         return f'{self.name.title()}: {self.description[:50]}'
 

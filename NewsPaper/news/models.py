@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 #from django.db.models import Sum
 from datetime import date
 
@@ -53,7 +54,14 @@ class Post(models.Model):
         post_preview_with_rating = "{}... \tРейтинг поста: {}".format(str(self.post_content[0:123]), self.post_rating)
         post_preview = "{}... ".format(str(self.post_content[0:123]))
         return post_preview
-
+    def show_comments(self):
+        results = []
+        comments = Comment.objects.filter(post=self.id)
+        for comm in comments:
+            author = comm.user.username
+            text = comm.comment_text
+            results.append(f"{author} говорит: '{text}'")
+        return results
     def like(self):
         self.post_rating += 1
         self.save()
@@ -63,6 +71,8 @@ class Post(models.Model):
         self.save()
     def __str__(self):
         return f'{self.post_name.title()}: {self.preview()}'
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -86,3 +96,5 @@ class Comment(models.Model):
         self.save()
     def __str__(self):
         return f'Комментарий к посту {self.post.post_name.title()} от пользователя {self.user} - {self.comment_date}'
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
