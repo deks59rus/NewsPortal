@@ -48,6 +48,12 @@ class NewsDetail(DetailView):
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'new'
     #pk_url_kwarg = "id"
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        # Добавляем в контекст комментарии объекта
+        context['comments'] = Comment.objects.filter(post = self.object).order_by("-comment_date")
+        return context
 class NewsListWithSearch(NewsList):
     template_name =  "news_search.html"
     #form_class=NewForm

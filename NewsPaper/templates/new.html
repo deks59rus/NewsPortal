@@ -55,8 +55,29 @@ Post
        {# Добавим кнопку отправки данных формы #}
        <input type="submit" value="Добавить комментарий" />
    </form>
-    <div style="text-align: left;">
-<h3>Комментарии:</h3>
-<span style="white-space: pre-line">{{new.show_comments}}</span>
-    </div>
+
+<!--    <div style="text-align: left;">-->
+<!--<h3>Комментарии:</h3>-->
+<!--<span style="white-space: pre-line">{{new.show_comments}}</span>-->
+<!--    </div>-->
+
+<p>Комментарии: {{new.show_comments}}</p>
+<div align="left">
+{% if comments %}
+<h5>Комментарии:</h5>
+{% for comment in comments %}
+
+
+
+    <tr align="left">
+        <td>{{ comment.user }}</td>
+        <td>в {{ comment.comment_date}}</td>
+        <td>написал: "{{ comment.comment_text}}"</td>
+        <td>Рейтинг комментария: {{ comment.comment_rating}}</td>
+        <br>
+    </tr>
+{% endfor %}
+<!--{{ comments}}-->
+{% endif %}
+</div>
 {% endblock content %}
