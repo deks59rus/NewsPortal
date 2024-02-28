@@ -15,16 +15,21 @@ Post
                    <input type="submit" value="Назад" />
                </form>
            </td>
+           {% if perms.news.change_post %}
            <td>
                <form action="./update" >
                    <input type="submit" value="Редактировать" />
                </form>
            </td>
+           {% endif %}
+
+           {% if perms.news.delete_post %}
            <td>
                <form action="./delete" >
                    <input type="submit" value="Удалить" />
                </form>
            </td>
+           {% endif %}
 
 
        </table>
@@ -61,7 +66,7 @@ Post
 <!--<span style="white-space: pre-line">{{new.show_comments}}</span>-->
 <!--    </div>-->
 
-<p>Комментарии: {{new.show_comments}}</p>
+<!--<p>Комментарии: {{new.show_comments}}</p>-->
 <div align="left">
 {% if comments %}
 <h5>Комментарии:</h5>
@@ -72,7 +77,7 @@ Post
     <tr align="left">
         <td>{{ comment.user }}</td>
         <td>в {{ comment.comment_date}}</td>
-        <td>написал: "{{ comment.comment_text}}"</td>
+        <td>написал: "{{ comment.comment_text}}" </td>
         <td>Рейтинг комментария: {{ comment.comment_rating}}</td>
         <br>
     </tr>

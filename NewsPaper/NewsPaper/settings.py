@@ -42,9 +42,24 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.sites',
     'django_filters',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.yandex',  # вход через яндекс
+
 ]
 
 SITE_ID = 1
+LOGIN_REDIRECT_URL = "/news"
+LOGOUT_REDIRECT_URL = "/news"
+#LOGIN_URL = "/"
+#Глобальные пареметры регистрации
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -54,6 +69,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "NewsPaper.urls"
@@ -106,6 +122,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

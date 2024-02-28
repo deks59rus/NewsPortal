@@ -12,12 +12,17 @@
 <h1>Новости</h1>
 <!--{{ news }}-->
 <h2>Новостей на странице: {{news|length}}</h2>
+{% if perms.news.change_post %}
 <form action="{%url 'new_create' %}" >
     <input type="submit" value="Опубликовать новость" />
 </form>
+{% endif %}
+
+{%block search%}
 <form action="{%url 'news_search'%}" >
     <input type="submit" value="Поиск" />
 </form>
+{% endblock %}
        <table>
            <tr>
                <td><h4></h4></td>
@@ -40,9 +45,11 @@
                 полям объекта модели. Например, здесь мы выводим имя,
                 в следующем столбце описание, и т.д.  -->
                <td>
+                   {% block open_button%}
                    <form action="{{new.id}}" >
                         <input type="submit" value="Открыть" />
                     </form>
+                   {% endblock %}
                </td>
                <td>{{ new.post_name|censor }}</td>
                <td>{{ new.time_of_creation }}</td>
@@ -62,7 +69,7 @@
        <a href="? {% url_replace page=1 %}">1</a>
        {% if page_obj.previous_page_number != 1 %}
            ...
-           <a href="?{% url_replace page=page_obj.previous_page_number %} ">{{ page_obj.previous_page_number }}</a>
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
        {% endif %}
    {% endif %}
 

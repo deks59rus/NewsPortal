@@ -3,6 +3,7 @@ from datetime import datetime
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from.models import Product
 from .forms import ProductForm
@@ -19,6 +20,13 @@ from django.urls import reverse_lazy
 Указываем поле сортировки данных модели (необязательно).
 Записываем название шаблона.
 Объявляем, как хотим назвать переменную в шаблоне.
+
+Пример проверки прав для группы пользователей
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
+class MyView(PermissionRequiredMixin, View):
+    permission_required = ('<app>.<action>_<model>',
+                           '<app>.<action>_<model>')
 """
 class ProductsList(ListView):
     # Указываем модель, объекты которой мы будем выводить
@@ -30,7 +38,7 @@ class ProductsList(ListView):
     # Это имя списка, в котором будут лежать все объекты.
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = "products"
-    paginate_by = 1
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -79,20 +87,24 @@ def multiply(request):
 
    return HttpResponse(html)
 
-class ProductCreate(CreateView):
+class ProductCreate(PermissionRequiredMixin,CreateView):
+    permission_required = ('simpleapp.add_product',)
     # Указываем нашу разработанную форму
     form_class = ProductForm
     # модель товаров
     model = Product
     # и новый шаблон, в котором используется форма.
     template_name = 'product_edit.html'
+    raise_exception = True
 
-class ProductUpdate(UpdateView):
+class ProductUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('simpleapp.change_product',)
     form_class = ProductForm
     model = Product
     template_name = 'product_edit.html'
 
-class ProductDelete(DeleteView):
+class ProductDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('simpleapp.delete_product',)
     model = Product
     template_name = 'product_delete.html'
     success_url = reverse_lazy('product_list')

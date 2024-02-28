@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Post, Comment
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
@@ -40,7 +41,8 @@ class NewsList(ListView):
         context['filterset'] = self.filterset
         return context
 
-class NewsDetail(DetailView):
+class NewsDetail(LoginRequiredMixin,DetailView):
+    raise_exception = True
     # Модель всё та же, но мы хотим получать информацию по отдельному товару
     model = Post
     # Используем другой шаблон — new.html
@@ -57,7 +59,8 @@ class NewsDetail(DetailView):
 class NewsListWithSearch(NewsList):
     template_name =  "news_search.html"
     #form_class=NewForm
-class NewCreate(CreateView):
+class NewCreate(PermissionRequiredMixin,CreateView):
+    permission_required = ('news.add_post',)
     form_class = NewForm
     model = Post
     template_name = 'new_edit.html'
@@ -66,7 +69,8 @@ class NewCreate(CreateView):
         new = form.save(commit=False)
         new.post_type = Post.NEWS
         return super().form_valid(form)
-class NewUpdate(UpdateView):
+class NewUpdate(PermissionRequiredMixin,UpdateView):
+    permission_required = ('news.change_post',)
     form_class = NewForm
     model = Post
     template_name = 'new_edit.html'
@@ -74,9 +78,10 @@ class NewUpdate(UpdateView):
         new = form.save(commit=False)
         new.post_type = Post.NEWS
         return super().form_valid(form)
-class ArticleCreate(CreateView):
+class ArticleCreate(NewCreate):
+
     form_class = ArticleForm
-    model = Post
+    #model = Post
     template_name = 'article_edit.html'
 
     def form_valid(self, form):
@@ -84,8 +89,15 @@ class ArticleCreate(CreateView):
         new.post_type = Post.ARTICLE
         return super().form_valid(form)
 class ArticleUpdate(NewUpdate):
+
+    form_class = ArticleForm
     template_name = 'article_edit.html'
-class NewDelete(DeleteView):
+    def form_valid(self, form):
+        new = form.save(commit=False)
+        new.post_type = Post.ARTICLE
+        return super().form_valid(form)
+class NewDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
     model = Post
     template_name = 'new_delete.html'
     success_url = reverse_lazy('news_list')

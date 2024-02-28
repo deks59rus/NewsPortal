@@ -22,7 +22,7 @@ Products
     {{ filterset.form.non_field_errors }}
 
     {{ filterset.form.name__icontains.errors }}
-    <label for="{{ filterset.form.name__icontains.id_for_label }}">Search</label>
+    <label for="{{filterset.form.name__icontains.id_for_label }}">Search</label>
     <input
         id="{{ filterset.form.name__icontains.id }}"
         name="{{ filterset.form.name__icontains.name }}"
@@ -32,6 +32,12 @@ Products
     <input type="submit" class="mt-3 btn-primary" value="Найти" />
     </form>
    <hr>
+
+    {# Теперь будем проверять не request.user.is_authenticated, а конкретные права #}
+    {% if perms.simpleapp.add_product %}
+    <a href="{% url 'product_create' %}">Добавить товар</a>
+    {% endif %}
+
    {% if products %}
        <table>
            <tr>
@@ -42,43 +48,49 @@ Products
                <td>Количество</td>
            </tr>
 
-           {% for product in products %}
-           <tr>
-               <td>{{ product.name }}</td>
-                <!-- Добавим специальный фильтр truncatechars,
-                чтобы ограничить количество символов до 15.
-                Все остальные символы превратятся в многоточие. -->
-               <td>{{ product.description|truncatewords:3 }}</td>
-               <td>{{ product.category.name }}</td>
-               <td>{{ product.price|currency }}</td>
-               <td>{{ product.quantity }}</td>
-           </tr>
-           {% endfor %}
 
-       </table>
-   {% else %}
-       <h2>Товаров нет!</h2>
-   {% endif %}
-   {# Добавляем пагинацию на страницу #}
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.description|truncatechars:15 }}</td>
+                <td>{{ product.category.name }}</td>
+                <td>{{ product.price|currency }}</td>
+                <td>{{ product.quantity }}</td>
 
-   {# Информация о предыдущих страницах #}
-   {% if page_obj.has_previous %}
-       <a href="? {% url_replace page=1 %}">1</a>
-       {% if page_obj.previous_page_number != 1 %}
-           ...
-           <a href="?{% url_replace page=page_obj.previous_page_number %} ">{{ page_obj.previous_page_number }}</a>
-       {% endif %}
-   {% endif %}
+                <td>
+                    {# А здесь доступ для каждой ссылки теперь будем проверять отдельно #}
+                    {% if perms.simpleapp.change_product %}
+                    <a href="{% url 'product_update' pk=product.id %}">Изменить</a>
+                    {% endif %}
+                    {% if perms.simpleapp.delete_product %}
+                    <a href="{% url 'product_delete' product.id %}">Удалить</a>
+                    {% endif %}
+                </td>
 
-   {# Информация о текущей странице #}
-   {{ page_obj.number }}
+            </tr>
+            {% endfor %}
 
-   {# Информация о следующих страницах #}
-   {% if page_obj.has_next %}
-       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
-       {% if paginator.num_pages != page_obj.next_page_number %}
-           ...
-           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-       {% endif %}
-   {% endif %}
+        </table>
+    {% else %}
+        <h2>Товаров нет!</h2>
+    {% endif %}
+
+    {% if page_obj.has_previous %}
+        <a href="?{% url_replace page=1 %}">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
+
+    {{ page_obj.number }}
+
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+            ...
+            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
+
 {% endblock content %}
