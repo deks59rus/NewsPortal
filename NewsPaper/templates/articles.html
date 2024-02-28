@@ -1,0 +1,87 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+<!-- Название у нас будет products -->
+{% block title %}
+Новости
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h1>Статьи</h1>
+<!--{{ news }}-->
+<h2>Новостей на странице: {{news|length}}</h2>
+{% if perms.news.change_post %}
+<form action="{%url 'article_create' %}" >
+    <input type="submit" value="Опубликовать Статью" />
+</form>
+{% endif %}
+
+{%block search%}
+<!--<form action="{%url 'news_search'%}" >-->
+<!--    <input type="submit" value="Поиск" />-->
+<!--</form>-->
+{% endblock %}
+       <table>
+           <tr>
+               <td><h4></h4></td>
+               <td><h4>Заголовок</h4></td>
+               <td><h4>Дата публикации</h4></td>
+               <td><h4>Превью</h4></td>
+               <td><h4>Рейтинг</h4></td>
+               <td><h4>Автор</h4></td>
+
+           </tr>
+
+           <!-- Для каждого товара будете генерироваться новая строчка,
+           т.е. новый HTML код, который указан в теле цикла.
+           При этом сам цикл работает точно так же, как и в Python.
+           -->
+           {% for article in articles %}
+           <tr>
+               <!-- Не забываем, что переменные в шаблоне ничем не отличаются
+                от переменных в Python. Здесь также можно получать доступ к
+                полям объекта модели. Например, здесь мы выводим имя,
+                в следующем столбце описание, и т.д.  -->
+               <td>
+                   {% block open_button%}
+                   <form action="{{article.id}}" >
+                        <input type="submit" value="Открыть" />
+                    </form>
+                   {% endblock %}
+               </td>
+               <td>{{ article.post_name|censor }}</td>
+               <td>{{ article.time_of_creation }}</td>
+               <!--<td>{{ new.preview }}</td>-->
+               <td>{{ article.post_content|truncatewords:20|censor }}</td>
+               <td>{{article.post_rating}}</td>
+               <td>{{ article.author_post.authorUser}}</td>
+
+           </tr>
+           {% endfor %}
+
+       </table>
+    {# Добавляем пагинацию на страницу #}
+
+    {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="? {% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+{% endblock content %}
