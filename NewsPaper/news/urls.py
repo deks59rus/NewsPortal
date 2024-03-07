@@ -1,7 +1,7 @@
 from django.urls import path
 # Импортируем созданное нами представление
 from .views import NewsList, NewsDetail, NewsListWithSearch, NewCreate, ArticleCreate,NewUpdate,ArticleUpdate, NewDelete, ArticleDelete, CommentaryCreate, ArticleList
-
+from .views import subscriptions
 
 urlpatterns = [
    # path — означает путь.
@@ -23,4 +23,5 @@ urlpatterns = [
    path('news/<int:pk>/delete/', NewDelete.as_view(), name='new_delete'),
    path('articles/<int:pk>/delete/', ArticleDelete.as_view(), name='article_delete'),
    path('news/<int:pk>/addcomment', CommentaryCreate.as_view(),  name = "add_comment"),
+   path('subscriptions/', subscriptions, name='subscriptions'),
 ]

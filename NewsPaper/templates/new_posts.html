@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Публикации за неделю!</title>
+</head>
+<body>
+
+<h1>Читайте свежие новости на нашем сайте!</h1>
+
+<h2>Новых публикаций за неделю: {{posts|length}}</h2>
+
+<ul>
+    {% for n in posts %}
+    <li><a href="{{link}}{{n.get_absolute_url}}">{{n.post_name}}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>
