@@ -19,7 +19,7 @@ def notify_post_created(sender, instance, **kwargs):
         subscribers = Subscriber.objects.filter(category=cat)
         emails += [n.user.email for n in subscribers]
 
-    subject = f'Опубликована новость в интересующей вас категории: {sender.category}'
+    subject = f'Опубликована новость в интересующей вас категории: {instance.post_category.all()}'
 
     text_content = (
         f'Автор: {instance.author_post}\n'

@@ -71,7 +71,7 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True # позволит избежать допо
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 #Блок кода с насиройками E-mail:
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #'django.core.mail.backends.console.EmailBackend' - консоль, backends.smtp.EmailBackend - почта
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #'django.core.mail.backends.console.EmailBackend' - консоль, backends.smtp.EmailBackend - почта
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = "messagesender.galkin@yandex.ru" #+79129896117
