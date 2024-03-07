@@ -5,12 +5,18 @@ from datetime import datetime
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from.models import Product
+from.models import Product, Subscription, Category #Добавляем модели категорий и подписок
 from .forms import ProductForm
 from pprint import pprint
 from django.http import HttpResponse
 from .filters import ProductFilter
 from django.urls import reverse_lazy
+# Импорт библиотек от модуля D6
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect# защита доступа
+from django.db.models import Exists, OuterRef
+from django.shortcuts import render
+
 # Create your views here.
 """
 Вот так мы можем использовать дженерик ListView для вывода списка товаров:
@@ -86,6 +92,37 @@ def multiply(request):
        html = f"<html><body>Invalid input.</body></html>"
 
    return HttpResponse(html)
+
+#Вывод формы подписок на рассылки
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscription.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscription.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('name')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories': categories_with_subscriptions},
+    )
 
 class ProductCreate(PermissionRequiredMixin,CreateView):
     permission_required = ('simpleapp.add_product',)

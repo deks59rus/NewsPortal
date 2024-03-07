@@ -100,3 +100,15 @@ class Comment(models.Model):
         return f'Комментарий к посту {self.post.post_name.title()} от пользователя {self.user} - {self.comment_date}'
     def get_absolute_url(self):
         return reverse('post_detail', args=[str(self.post.id)])
+
+class Subscriber(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )

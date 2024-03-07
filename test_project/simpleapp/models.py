@@ -3,7 +3,8 @@ from django.db import models
 # Create your models here.
 from django.core.validators import MinValueValidator
 from django.urls import reverse
-
+# Импортируем базовую модель пользователя:
+from django.contrib.auth.models import User
 
 # Товар для нашей витрины
 class Product(models.Model):
@@ -37,3 +38,16 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name.title()
+
+#Таблица, которая хранит подписки
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )

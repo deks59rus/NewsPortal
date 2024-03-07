@@ -1,13 +1,17 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Post, Comment
+from .models import Post, Comment,  Subscriber, Category #PostCategory,
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from .filters import NewsFilter
 from .forms import NewForm, ArticleForm, CommentForm
 from django.urls import reverse_lazy
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required # Декоратор проверки авторизации
+from django.views.decorators.csrf import csrf_protect # защита доступа
+from django.db.models import Exists, OuterRef
+
 # Create your views here.
 class NewsList(ListView):
 
@@ -132,3 +136,32 @@ class CommentaryCreate(CreateView):
         Returns the current page URL.
         """
         return self.request.build_absolute_uri()
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscriber.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscriber.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscriber.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('category_name')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories': categories_with_subscriptions},
+    )

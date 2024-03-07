@@ -50,17 +50,48 @@ INSTALLED_APPS = [
     #Аналогично другие провайдеры?
     #'allauth.socialaccount.providers.VK', добавить гугл, вк и гит
 
+    "django_apscheduler", #выполнение задач по расписанию
+    
+
 ]
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = "/products"
+
 #Глобальные пареметры регистрации
+# Подробнее можно ознакомится тут: https://docs.allauth.org/en/0.61.1/index.html
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'# none/mandatory(обязательная) / optional(необязательная)
+# Указали форму для дополнительной обработки регистрации пользователя
 ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True # позволит избежать дополнительного входа и активирует аккаунт сразу, как только мы перейдём по ссылке
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+#Блок кода с насиройками E-mail:
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #'django.core.mail.backends.console.EmailBackend' - консоль, backends.smtp.EmailBackend - почта
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "messagesender.galkin@yandex.ru" #+79129896117
+EMAIL_HOST_PASSWORD = "gzdmupdezdpjyeis"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+SERVER_EMAIL = "messagesender.galkin@yandex.ru"
+MANAGERS = (
+    #('Ivan', 'ivan@yandex.ru'),
+    #('Petr', 'petr@yandex.ru'),
+    ('Denis', 'deks59rus@yandex.ru'),
+)
+ADMINS = (
+    ('Dionisiy', 'den10galka@gmail.com'),
+)
+EMAIL_SUBJECT_PREFIX = "[NewsPaper by deks59rus]"
+
+DEFAULT_FROM_EMAIL = "messagesender.galkin@yandex.ru"
+
+#конец блока
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -83,9 +114,10 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-                "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # `allauth` обязательно нужен этот процессор
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -127,6 +159,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
