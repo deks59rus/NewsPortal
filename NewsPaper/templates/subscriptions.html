@@ -5,6 +5,10 @@ Subscriptions
 {% endblock title %}
 
 {% block content %}
+    <form action="{%url 'news_list' %}" >
+        <input type="submit" value="Назад" />
+    </form>
+        <p>
     {% for category in categories  %}
         <p>
             {{ category.category_name }}

@@ -12,6 +12,11 @@
 <h1>Новости</h1>
 <!--{{ news }}-->
 <h2>Новостей на странице: {{news|length}}</h2>
+{% if request.user.is_authenticated %}
+<form action="{%url 'subscriptions' %}" >
+    <input type="submit" value="Подписаться на рассылку" />
+</form>
+{% endif %}
 {% if perms.news.change_post %}
 <form action="{%url 'new_create' %}" >
     <input type="submit" value="Опубликовать новость" />
@@ -53,8 +58,8 @@
                </td>
                <td>{{ new.post_name|censor }}</td>
                <td>{{ new.time_of_creation }}</td>
-               <!--<td>{{ new.preview }}</td>-->
-               <td>{{ new.post_content|truncatewords:20|censor }}</td>
+               <td>{{ new.preview }}</td>
+<!--               <td>{{ new.post_content|truncatewords:20|censor }}</td>-->
                <td>{{new.post_rating}}</td>
                <td>{{ new.author_post.authorUser}}</td>
 

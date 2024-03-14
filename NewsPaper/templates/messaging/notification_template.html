@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <title>Свежая новость опубликована!</title>
+</head>
+<body>
+
+<h1>Читайте новости на нашем сайте!</h1>
+
+
+<ul>
+    Автор: {{instance.author_post}}<br>
+    Заголовок:  {{instance.post_name}}<br><br>
+    Текст новости[preview]:  {{instance.preview}} <br>
+    <a href="{{link}}{{instance.get_absolute_url}}">Ссылка на новость</a>
+</ul>
+</body>
+</html>

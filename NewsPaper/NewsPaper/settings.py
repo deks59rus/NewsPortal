@@ -71,7 +71,7 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True # позволит избежать допо
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 
 #Блок кода с насиройками E-mail:
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #'django.core.mail.backends.console.EmailBackend' - консоль, backends.smtp.EmailBackend - почта
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #'django.core.mail.backends.console.EmailBackend' - консоль, backends.smtp.EmailBackend - почта
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = "messagesender.galkin@yandex.ru" #+79129896117
@@ -93,6 +93,14 @@ EMAIL_SUBJECT_PREFIX = "[NewsPaper by deks59rus]"
 DEFAULT_FROM_EMAIL = "messagesender.galkin@yandex.ru"
 
 #конец блока
+
+#Подключение БД для реализации Асинхронности
+CELERY_BROKER_URL = 'redis://default:bLz9iUvNieHUm1WHR4N2YKoNSNWCwKwb@redis-14550.c322.us-east-1-2.ec2.cloud.redislabs.com:14550'
+CELERY_RESULT_BACKEND = 'redis://default:bLz9iUvNieHUm1WHR4N2YKoNSNWCwKwb@redis-14550.c322.us-east-1-2.ec2.cloud.redislabs.com:14550'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 
 MIDDLEWARE = [

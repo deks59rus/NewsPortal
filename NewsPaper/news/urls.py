@@ -1,7 +1,7 @@
 from django.urls import path
 # Импортируем созданное нами представление
 from .views import NewsList, NewsDetail, NewsListWithSearch, NewCreate, ArticleCreate,NewUpdate,ArticleUpdate, NewDelete, ArticleDelete, CommentaryCreate, ArticleList
-from .views import subscriptions
+from .views import subscriptions, IndexView
 
 urlpatterns = [
    # path — означает путь.
@@ -11,6 +11,7 @@ urlpatterns = [
    # а Django ожидает функцию, нам надо представить этот класс в виде view.
    # Для этого вызываем метод as_view.
    path('news/', NewsList.as_view(),  name = "news_list"),
+   path('test', IndexView.as_view()),
    # pk — это первичный ключ товара, который будет выводиться у нас в шаблон
    # int — указывает на то, что принимаются только целочисленные значения
    path('news/<int:pk>/', NewsDetail.as_view(),  name = "post_detail"),

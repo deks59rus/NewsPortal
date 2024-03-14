@@ -58,6 +58,13 @@ INSTALLED_APPS = [
 SITE_ID = 1
 LOGIN_REDIRECT_URL = "/products"
 
+#Подключение БД для реализации Асинхронности
+CELERY_BROKER_URL = 'redis://default:bLz9iUvNieHUm1WHR4N2YKoNSNWCwKwb@redis-14550.c322.us-east-1-2.ec2.cloud.redislabs.com:14550'
+CELERY_RESULT_BACKEND = 'redis://default:bLz9iUvNieHUm1WHR4N2YKoNSNWCwKwb@redis-14550.c322.us-east-1-2.ec2.cloud.redislabs.com:14550'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 #Глобальные пареметры регистрации
 # Подробнее можно ознакомится тут: https://docs.allauth.org/en/0.61.1/index.html
 ACCOUNT_EMAIL_REQUIRED = True

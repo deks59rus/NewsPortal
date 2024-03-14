@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from datetime import datetime
+from datetime import datetime, timedelta
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -11,6 +11,9 @@ from pprint import pprint
 from django.http import HttpResponse
 from .filters import ProductFilter
 from django.urls import reverse_lazy
+# Импорт задач для ассинхронного выполнения
+from django.views import View
+from .tasks import hello, printer
 # Импорт библиотек от модуля D6
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect# защита доступа
@@ -34,6 +37,15 @@ class MyView(PermissionRequiredMixin, View):
     permission_required = ('<app>.<action>_<model>',
                            '<app>.<action>_<model>')
 """
+# Пример асинхронного выполнения задачи:
+class IndexView(View):
+    def get(self, request):
+        #printer.delay(N=10) # Пример 1
+        printer.apply_async([10], countdown=5) # Пример 2
+        # printer.apply_async([10], eta = datetime.now() + timedelta(seconds=5))
+        # последний, параметр выполнения — expires. Он служит для того, чтобы убирать задачу из очереди по прошествии какого-то времени.
+        hello.delay()
+        return HttpResponse('Hello!')
 class ProductsList(ListView):
     # Указываем модель, объекты которой мы будем выводить
     model = Product

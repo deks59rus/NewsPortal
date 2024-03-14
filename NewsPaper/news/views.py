@@ -12,7 +12,19 @@ from django.contrib.auth.decorators import login_required # Декоратор �
 from django.views.decorators.csrf import csrf_protect # защита доступа
 from django.db.models import Exists, OuterRef
 
-# Create your views here.
+#Импорт задач для проверки асинхронного выполнения:
+from django.views import View
+from .tasks import printer
+
+# Пример асинхронного выполнения задачи:
+class IndexView(View):
+    def get(self, request):
+        #printer.delay(N=10) # Пример 1
+        printer.apply_async([10], countdown=0) # Пример 2
+        # printer.apply_async([10], eta = datetime.now() + timedelta(seconds=5))
+        # последний, параметр выполнения — expires. Он служит для того, чтобы убирать задачу из очереди по прошествии какого-то времени.
+        return HttpResponse('Hello!')
+
 class NewsList(ListView):
 
     model = Post
