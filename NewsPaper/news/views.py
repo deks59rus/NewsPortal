@@ -12,6 +12,12 @@ from django.contrib.auth.decorators import login_required # Декоратор �
 from django.views.decorators.csrf import csrf_protect # защита доступа
 from django.db.models import Exists, OuterRef
 
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+print(CACHE_TTL)
+
 #Импорт задач для проверки асинхронного выполнения:
 from django.views import View
 from .tasks import printer
